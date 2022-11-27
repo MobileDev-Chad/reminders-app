@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import NewReminder from "./components/NewReminder";
 import ReminderList from "./components/ReminderList";
 import Reminder from "./models/Reminder";
 import ReminderService from "./services/reminder";
@@ -16,9 +17,20 @@ export default function App() {
     const reminders = await ReminderService.getReminders();
     setReminders(reminders);
   };
+
+  const removeReminder = (id: number) => {
+    setReminders(reminders.filter((reminder) => reminder.id !== id));
+  };
+
+  const addReminder = async (title: string) => {
+    const newReminder = await ReminderService.addReminder(title);
+    setReminders([newReminder, ...reminders]);
+  };
+
   return (
     <div className="App">
-      <ReminderList items={reminders} />
+      <NewReminder onAddReminder={addReminder} />
+      <ReminderList items={reminders} onRemoveReminder={removeReminder} />
     </div>
   );
 }
