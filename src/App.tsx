@@ -1,32 +1,24 @@
-import * as React from 'react';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import ProTip from './ProTip';
+import React, { useState, useEffect } from "react";
+import ReminderList from "./components/ReminderList";
+import Reminder from "./models/Reminder";
+import ReminderService from "./services/reminder";
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}.
-    </Typography>
-  );
-}
+// const reminders: Reminder[] = [{ id: 1, title: "Reminder 1" }];
 
 export default function App() {
+  const [reminders, setReminders] = useState<Reminder[]>([]);
+
+  useEffect(() => {
+    loadReminders();
+  }, []);
+
+  const loadReminders = async () => {
+    const reminders = await ReminderService.getReminders();
+    setReminders(reminders);
+  };
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Create React App example with TypeScript
-        </Typography>
-        <ProTip />
-        <Copyright />
-      </Box>
-    </Container>
+    <div className="App">
+      <ReminderList items={reminders} />
+    </div>
   );
 }
